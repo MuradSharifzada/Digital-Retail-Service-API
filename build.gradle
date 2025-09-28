@@ -35,6 +35,8 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:mongodb'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    testImplementation group: 'io.rest-assured', name: 'rest-assured', version: '5.5.5'
 }
 
 tasks.named('test') {
