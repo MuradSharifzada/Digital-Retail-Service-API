@@ -10,3 +10,16 @@ services:
       - "27017:27017"
     volumes:
       - ./data:/data/db
+
+  mysql:
+    image: mysql:8.3.0
+    container_name: mysql_database
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: mysqldb
+      MYSQL_USER: test
+      MYSQL_PASSWORD: test
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
