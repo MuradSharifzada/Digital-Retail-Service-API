@@ -1,5 +1,6 @@
 package com.orderservice.service;
 
+import com.orderservice.client.InventoryClient;
 import com.orderservice.dto.OrderRequest;
 import com.orderservice.dto.OrderResponse;
 import com.orderservice.model.Order;
@@ -15,15 +16,21 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
 
     public void placeOrder(OrderRequest orderRequest) {
-        Order order = Order.builder()
-                .orderNumber(orderRequest.orderNumber())
-                .price(orderRequest.price())
-                .skuCode(orderRequest.skuCode())
-                .quantity(orderRequest.quantity())
-                .build();
-        orderRepository.save(order);
+        var inventoryProductInStock = inventoryClient.isInStock(orderRequest.skuCode(), orderRequest.quantity());
+        if (inventoryProductInStock) {
+            Order order = Order.builder()
+                    .orderNumber(orderRequest.orderNumber())
+                    .price(orderRequest.price())
+                    .skuCode(orderRequest.skuCode())
+                    .quantity(orderRequest.quantity())
+                    .build();
+            orderRepository.save(order);
+        } else {
+            throw new RuntimeException("Product with skuCode " + orderRequest.skuCode() + " is not in stock");
+        }
     }
 
     public List<OrderResponse> getAllPlacedOrders() {
